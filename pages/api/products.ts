@@ -4,10 +4,11 @@ import { Product } from "../../models/Product";
 import { mongooseConnect } from "../../lib/mongoose";
 import { formatProduct } from "../../formatters/Product.formatters";
 import { Product as IProduct } from "../../interfaces/Product.interface";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handle(
-  req: any,
-  res: any
+  req: NextApiRequest,
+  res: NextApiResponse
 ): Promise<IProduct | IProduct[] | boolean> {
   const { method } = req;
   await mongooseConnect();
