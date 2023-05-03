@@ -1,8 +1,8 @@
 import multiparty from "multiparty";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import fs from "fs";
-export default async function handler(req, res) {
-  const { files, fields } = await new Promise((resolve, reject) => {
+export default async function handler(req: any, res: any) {
+  const { files } = await new Promise<any>((resolve, reject) => {
     new multiparty.Form().parse(req, async (err, fields, files) => {
       if (err) reject(err);
       resolve({ fields, files });
@@ -11,8 +11,8 @@ export default async function handler(req, res) {
   const client = new S3Client({
     region: "eu-north-1",
     credentials: {
-      accessKeyId: process.env.S3_ACCESS_KEY,
-      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+      accessKeyId: process.env.S3_ACCESS_KEY || "",
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "",
     },
   });
   let links = [];

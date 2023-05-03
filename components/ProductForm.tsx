@@ -7,7 +7,7 @@ interface ProductFormProps {
   id?: string;
   title?: string;
   description?: string;
-  price?: string;
+  price?: number;
   images?: string[];
 }
 
@@ -20,7 +20,7 @@ export default function ProductForm({
 }: ProductFormProps) {
   const [title, setTitle] = useState(currentTitle || "");
   const [description, setDescription] = useState(currentDescription || "");
-  const [price, setPrice] = useState(currentPrice || "");
+  const [price, setPrice] = useState(currentPrice || 0);
   const [images, setImages] = useState(existingImages || []);
   const [goToProducts, setGoToProducts] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -115,7 +115,7 @@ export default function ProductForm({
         type="number"
         placeholder="Price"
         value={price}
-        onChange={(e) => setPrice(e.target.value)}
+        onChange={(e) => setPrice(Number(e.target.value))}
       />
       <button type="submit" className="btn-primary">
         Save

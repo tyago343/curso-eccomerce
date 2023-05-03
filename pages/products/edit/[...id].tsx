@@ -3,10 +3,11 @@ import Layout from "../../../components/Layout";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductForm from "../../../components/ProductForm";
+import { Product } from "../../../interfaces/Product.interface";
 
 export default function EditProductPage() {
   const router = useRouter();
-  const [productInfo, setProductInfo] = useState(null);
+  const [productInfo, setProductInfo] = useState<Product | null>(null);
   const { id } = router.query;
   useEffect(() => {
     if (!id) return;
