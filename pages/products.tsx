@@ -2,14 +2,16 @@ import Link from "next/link";
 import Layout from "../components/Layout";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Product } from "../interfaces/Product.interface";
 
 export default function Products() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[] | []>([]);
   useEffect(() => {
     axios.get("/api/products").then((res) => {
       setProducts(res.data);
     });
   }, []);
+  console.log(products);
   return (
     <Layout>
       <Link className="btn-primary" href="/products/new">
@@ -24,10 +26,10 @@ export default function Products() {
         </thead>
         <tbody>
           {products.map((product) => (
-            <tr key={product._id}>
+            <tr key={product.id}>
               <td>{product.title}</td>
               <td>
-                <Link href={`/products/edit/${product._id}`}>
+                <Link href={`/products/edit/${product.id}`}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -44,7 +46,7 @@ export default function Products() {
                   </svg>
                   Edit
                 </Link>
-                <Link href={`/products/delete/${product._id}`}>
+                <Link href={`/products/delete/${product.id}`}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

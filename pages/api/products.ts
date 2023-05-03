@@ -2,8 +2,13 @@ import mongoose from "mongoose";
 import clientPromise from "../../lib/mongodb";
 import { Product } from "../../models/Product";
 import { mongooseConnect } from "../../lib/mongoose";
+import { formatProduct } from "../../formatters/Product.formatters";
+import { Product as IProduct } from "../../interfaces/Product.interface";
 
-export default async function handle(req: any, res: any) {
+export default async function handle(
+  req: any,
+  res: any
+): Promise<IProduct | IProduct[] | boolean> {
   const { method } = req;
   await mongooseConnect();
   if (method === "POST") {
@@ -14,14 +19,20 @@ export default async function handle(req: any, res: any) {
       price,
       images,
     });
-    res.json(productDoc);
+    const formattedProduct = formatProduct(productDoc);
+    res.json(formattedProduct);
   }
   if (method === "GET") {
     if (req.query?.id) {
       return res.json(await Product.findOne({ _id: req.query.id }));
     }
-    const productDoc = await Product.find();
-    res.json(productDoc);
+    const productsDoc = await Product.find();
+
+    const formattedProducts = productsDoc.map((productDoc) =>
+      formatProduct(productDoc)
+    );
+
+    res.json(formattedProducts);
   }
   if (method === "PUT") {
     const { title, description, price, _id, images } = req.body;
@@ -34,4 +45,5 @@ export default async function handle(req: any, res: any) {
       res.json(true);
     }
   }
+  return false;
 }

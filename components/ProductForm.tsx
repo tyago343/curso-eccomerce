@@ -3,13 +3,21 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import Spinner from "./Spinner";
 import { ReactSortable } from "react-sortablejs";
+interface ProductFormProps {
+  id?: string;
+  title?: string;
+  description?: string;
+  price?: string;
+  images?: string[];
+}
+
 export default function ProductForm({
-  _id,
+  id,
   title: currentTitle,
   description: currentDescription,
   price: currentPrice,
   images: existingImages,
-}) {
+}: ProductFormProps) {
   const [title, setTitle] = useState(currentTitle || "");
   const [description, setDescription] = useState(currentDescription || "");
   const [price, setPrice] = useState(currentPrice || "");
@@ -17,7 +25,7 @@ export default function ProductForm({
   const [goToProducts, setGoToProducts] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const router = useRouter();
-  async function uploadImages(ev) {
+  async function uploadImages(ev: any) {
     ev.preventDefault();
     const files = ev.target?.files;
     if (files?.length) {
@@ -35,15 +43,15 @@ export default function ProductForm({
   async function createProduct(ev: any) {
     ev.preventDefault();
     const data = { title, description, price, images };
-    if (_id) {
+    if (id) {
       //update
-      await axios.put(`/api/products`, { ...data, _id });
+      await axios.put(`/api/products`, { ...data, id });
     } else {
       await axios.post("/api/products", data);
     }
     setGoToProducts(true);
   }
-  function updateImagesOrder(images) {
+  function updateImagesOrder(images: string[]) {
     setImages(images);
   }
   if (goToProducts) router.push("/products");
@@ -60,8 +68,8 @@ export default function ProductForm({
       <label>Photos</label>
       <div className="mb-2 flex flex-wrap gap-1">
         <ReactSortable
-          list={images}
-          setList={updateImagesOrder}
+          list={images as any}
+          setList={updateImagesOrder as any}
           className="flex flex-wrap gap-1"
         >
           {images?.length
