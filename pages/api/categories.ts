@@ -21,4 +21,13 @@ export default async function handler(
     const categoryDoc = await Category.create({ name, parent: parentCategory });
     res.json(formatCategory(categoryDoc));
   }
+  if (method === "PUT") {
+    const { id, name, parentCategory } = body;
+    const categoryDoc = await Category.findByIdAndUpdate(
+      { _id: id },
+      { name, parent: parentCategory },
+      { new: true }
+    );
+    res.json(formatCategory(categoryDoc));
+  }
 }
