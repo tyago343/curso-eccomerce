@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import axios from "axios";
+import { Category } from "../interfaces/Category.interface";
 
 export default function Categories() {
-  const [editedCategory, setEditedCategory] = useState(null);
+  const [editedCategory, setEditedCategory] = useState<Category | null>(null);
   const [name, setName] = useState("");
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[] | []>([]);
   const [parentCategory, setParentCategory] = useState("");
   async function saveCategory(event: any) {
     event.preventDefault();
@@ -22,7 +23,7 @@ export default function Categories() {
   function editCategory(category: any) {
     setEditedCategory(category);
     setName(category.name);
-    setParentCategory(category.parent?._id || "");
+    setParentCategory(category.parent?.id || "");
   }
   useEffect(() => {
     fetchCategories();
@@ -51,7 +52,7 @@ export default function Categories() {
           <option value="0">No parent category</option>
           {categories.length
             ? categories.map((category: any) => (
-                <option key={category._id} value={category._id}>
+                <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))
@@ -71,10 +72,10 @@ export default function Categories() {
         </thead>
         <tbody>
           {categories.length
-            ? categories.map((category: any) => (
-                <tr key={category._id}>
+            ? categories.map((category) => (
+                <tr key={category.id}>
                   <td>{category.name}</td>
-                  <td>{category?.parent?.name}</td>
+                  <td>{category.parent?.name}</td>
                   <td>
                     <button
                       className="mr-1 btn-primary"
