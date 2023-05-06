@@ -18,17 +18,14 @@ export default function Categories() {
       await axios
         .put(`/api/categories`, { ...data, id: editedCategory.id })
         .then(() => {
-          setName("");
-          setParentCategory("");
           setEditedCategory(null);
-          fetchCategories();
         });
-      return;
+    } else {
+      await axios.post("/api/categories", data);
     }
-    await axios.post("/api/categories", data).then(() => {
-      setName("");
-      fetchCategories();
-    });
+    setParentCategory("");
+    setName("");
+    fetchCategories();
   }
   function fetchCategories() {
     axios.get("/api/categories").then((response) => {
