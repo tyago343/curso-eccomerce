@@ -1,4 +1,5 @@
 import { Product } from "../interfaces/Product.interface";
+import { formatCategory } from "./Category.formatters";
 
 export function formatProduct(item: any): Product {
   return {
@@ -7,5 +8,6 @@ export function formatProduct(item: any): Product {
     description: item.description,
     price: item.price,
     images: item.images,
+    ...(item.category ? { category: formatCategory(item.category) } : {}),
   };
 }

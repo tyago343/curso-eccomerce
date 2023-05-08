@@ -132,5 +132,5 @@ function Categories({ swal }: { swal: any }) {
     </Layout>
   );
 }
-
+// @ts-ignore
 export default withSwal(({ swal }, ref) => <Categories swal={swal} />);

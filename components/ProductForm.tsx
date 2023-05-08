@@ -1,14 +1,17 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
 import { ReactSortable } from "react-sortablejs";
+import { Category } from "../interfaces/Category.interface";
+import Image from "next/image";
 interface ProductFormProps {
   id?: string;
   title?: string;
   description?: string;
   price?: number;
   images?: string[];
+  category?: Category;
 }
 
 export default function ProductForm({
@@ -17,6 +20,7 @@ export default function ProductForm({
   description: currentDescription,
   price: currentPrice,
   images: existingImages,
+  category: currentCategory,
 }: ProductFormProps) {
   const [title, setTitle] = useState(currentTitle || "");
   const [description, setDescription] = useState(currentDescription || "");
@@ -24,7 +28,16 @@ export default function ProductForm({
   const [images, setImages] = useState(existingImages || []);
   const [goToProducts, setGoToProducts] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    currentCategory?.id || ""
+  );
   const router = useRouter();
+  useEffect(() => {
+    axios.get("/api/categories").then((response) => {
+      setCategories(response.data);
+    });
+  }, []);
   async function uploadImages(ev: any) {
     ev.preventDefault();
     const files = ev.target?.files;
@@ -40,9 +53,15 @@ export default function ProductForm({
       setIsUploading(false);
     }
   }
-  async function createProduct(ev: any) {
+  async function saveProduct(ev: any) {
     ev.preventDefault();
-    const data = { title, description, price, images };
+    const data = {
+      title,
+      description,
+      price,
+      images,
+      category: selectedCategory,
+    };
     if (id) {
       //update
       await axios.put(`/api/products`, { ...data, id });
@@ -56,7 +75,7 @@ export default function ProductForm({
   }
   if (goToProducts) router.push("/products");
   return (
-    <form onSubmit={createProduct}>
+    <form onSubmit={saveProduct}>
       <h1>New product</h1>
       <label>Product name</label>
       <input
@@ -65,6 +84,18 @@ export default function ProductForm({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
+      <label>Category</label>
+      <select
+        value={selectedCategory}
+        onChange={(e) => setSelectedCategory(e.target.value)}
+      >
+        <option value="">Uncategorized</option>
+        {categories.map((category: Category) => (
+          <option key={category.id} value={category.id}>
+            {category.name}
+          </option>
+        ))}
+      </select>
       <label>Photos</label>
       <div className="mb-2 flex flex-wrap gap-1">
         <ReactSortable
@@ -74,8 +105,14 @@ export default function ProductForm({
         >
           {images?.length
             ? images.map((link) => (
-                <div key={link} className="h-24">
-                  <img src={link} alt="product image" className="rounded-lg" />
+                <div key={link} className="h-24 w-24">
+                  <Image
+                    width="1000"
+                    height="1000"
+                    src={link}
+                    alt="product image"
+                    className="rounded-lg"
+                  />
                 </div>
               ))
             : null}
