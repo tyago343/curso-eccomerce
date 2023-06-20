@@ -5,5 +5,6 @@ export function formatCategory(item: any): Category {
     id: item._id,
     name: item.name,
     ...(item.parent ? { parent: formatCategory(item.parent) } : {}),
+    properties: item.properties,
   };
 }

@@ -17,15 +17,23 @@ export default async function handler(
     res.json(formattedCategories);
   }
   if (method === "POST") {
-    const { name, parentCategory } = body;
-    const categoryDoc = await Category.create({ name, parent: parentCategory });
+    const { name, parentCategory, properties } = body;
+    const categoryDoc = await Category.create({
+      name,
+      parent: parentCategory || undefined,
+      properties,
+    });
     res.json(formatCategory(categoryDoc));
   }
   if (method === "PUT") {
-    const { id, name, parentCategory } = body;
+    const { id, name, parentCategory, properties } = body;
     const categoryDoc = await Category.findByIdAndUpdate(
       { _id: id },
-      { name, parent: parentCategory },
+      {
+        name,
+        parent: parentCategory || undefined,
+        properties,
+      },
       { new: true }
     );
     res.json(formatCategory(categoryDoc));
